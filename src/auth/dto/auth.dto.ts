@@ -2,10 +2,10 @@ import { IsPhoneNumber, IsString, MinLength } from "class-validator";
 
 export class AuthDto {
     @IsPhoneNumber()
-    phone: string
+    phoneNumber: string
 
     @MinLength(6, {
-        message: "Пароль должен быть длиннее 6 символов"
+        message: "Password must be at least 6 characters"
     })
     @IsString()
     password: string

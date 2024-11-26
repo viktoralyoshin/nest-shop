@@ -7,7 +7,7 @@ async function bootstrap() {
 
 	app.setGlobalPrefix('api')
 
-	app.use(cookieParser)
+	app.use(cookieParser())
 
 	app.enableCors({
 		origin: ['http://localhost:3000'],
@@ -16,7 +16,6 @@ async function bootstrap() {
 	})
 
 	await app.listen(process.env.PORT ?? 5000)
-	console.log(process.env.PORT)
 }
 
 bootstrap()
