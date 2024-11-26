@@ -6,10 +6,12 @@ import { JwtStrategy } from './jwt.strategy'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { getJwtConfig } from 'src/config/jwt.config'
+import { BucketModule } from 'src/bucket/bucket.module'
 
 @Module({
 	imports: [
 		UserModule,
+		BucketModule,
 		ConfigModule,
 		JwtModule.registerAsync({
 			imports: [ConfigModule],

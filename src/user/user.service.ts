@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { hash } from 'argon2'
-import { AuthDto } from 'src/auth/dto/auth.dto'
+import { RegisterDto } from 'src/auth/dto/register.dto'
 import { PrismaService } from 'src/prisma.service'
 
 @Injectable()
@@ -26,11 +26,30 @@ export class UserService {
 		})
 	}
 
-	async create(dto: AuthDto){
+	async getProfile(id: string) {
+		const profile = await this.getById(id)
+
+		const totalOrders = profile.orders.length
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const { password, ...user } = profile
+
+		return {
+			user: user,
+			statistics: [
+				{
+					label: 'Заказы',
+					value: totalOrders
+				}
+			]
+		}
+	}
+
+	async create(dto: RegisterDto) {
 		const user = {
 			phoneNumber: dto.phoneNumber,
-			firstName: '',
-			lastName: '',
+			firstName: dto.firstName,
+			lastName: dto.lastName,
 			password: await hash(dto.password)
 		}
 
@@ -38,5 +57,4 @@ export class UserService {
 			data: user
 		})
 	}
-
 }

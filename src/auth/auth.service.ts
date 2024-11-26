@@ -9,12 +9,15 @@ import { UserService } from 'src/user/user.service'
 import { AuthDto } from './dto/auth.dto'
 import { verify } from 'argon2'
 import { Response } from 'express'
+import { RegisterDto } from './dto/register.dto'
+import { BucketService } from 'src/bucket/bucket.service'
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private jwt: JwtService,
-		private userService: UserService
+		private userService: UserService,
+		private bucketService: BucketService
 	) {}
 
 	EXPIRE_DAY_REFRESH_TOKEN = 1
@@ -32,13 +35,15 @@ export class AuthService {
 		}
 	}
 
-	async register(dto: AuthDto) {
+	async register(dto: RegisterDto) {
 		const oldUser = await this.userService.getByPhoneNumber(dto.phoneNumber)
 
 		if (oldUser) throw new BadRequestException('User already exists')
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { password, ...user } = await this.userService.create(dto)
+
+		await this.bucketService.create(user.id)
 
 		const tokens = this.issueTokens(user.id)
 
