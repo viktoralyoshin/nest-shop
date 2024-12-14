@@ -8,7 +8,7 @@ export class BucketController {
 	constructor(private readonly bucketService: BucketService) {}
 
 	@Get()
-  @Auth()
+	@Auth()
 	async getBucketByUserId(@CurrentUser('id') id: string) {
 		return this.bucketService.getByUserId(id)
 	}

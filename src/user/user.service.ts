@@ -13,7 +13,30 @@ export class UserService {
 				id
 			},
 			include: {
-				orders: true
+				orders: {
+					orderBy: {
+						createdAt: 'desc'
+					},
+					include: {
+						products: {
+							include: {
+								category: true
+							}
+						}
+					}
+				}
+			}
+		})
+	}
+
+	getAll() {
+		return this.prisma.user.findMany({
+			select: {
+				id: true,
+				phoneNumber: true,
+				firstName: true,
+				lastName: true,
+				createdAt: true
 			}
 		})
 	}

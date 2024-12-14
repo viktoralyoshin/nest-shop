@@ -7,12 +7,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { getJwtConfig } from 'src/config/jwt.config'
 import { BucketModule } from 'src/bucket/bucket.module'
+import { WishlistModule } from 'src/wishlist/wishlist.module'
 
 @Module({
 	imports: [
 		UserModule,
 		BucketModule,
 		ConfigModule,
+		WishlistModule,
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],

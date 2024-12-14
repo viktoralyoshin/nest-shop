@@ -11,13 +11,15 @@ import { verify } from 'argon2'
 import { Response } from 'express'
 import { RegisterDto } from './dto/register.dto'
 import { BucketService } from 'src/bucket/bucket.service'
+import { WishlistService } from 'src/wishlist/wishlist.service'
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private jwt: JwtService,
 		private userService: UserService,
-		private bucketService: BucketService
+		private bucketService: BucketService,
+		private wishlistService: WishlistService
 	) {}
 
 	EXPIRE_DAY_REFRESH_TOKEN = 1
@@ -27,7 +29,7 @@ export class AuthService {
 		//eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { password, ...user } = await this.validateUser(dto)
 
-		const tokens = this.issueTokens(user.id)
+		const tokens = this.issueTokens(user.id, user.role)
 
 		return {
 			user,
@@ -44,8 +46,9 @@ export class AuthService {
 		const { password, ...user } = await this.userService.create(dto)
 
 		await this.bucketService.create(user.id)
+		await this.wishlistService.create(user.id)
 
-		const tokens = this.issueTokens(user.id)
+		const tokens = this.issueTokens(user.id, user.role)
 
 		return {
 			user,
@@ -60,7 +63,7 @@ export class AuthService {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { password, ...user } = await this.userService.getById(result.id)
 
-		const tokens = this.issueTokens(user.id)
+		const tokens = this.issueTokens(user.id, user.role)
 
 		return {
 			user,
@@ -68,8 +71,8 @@ export class AuthService {
 		}
 	}
 
-	private issueTokens(userId: string) {
-		const data = { id: userId }
+	private issueTokens(userId: string, role: string) {
+		const data = { id: userId, role: role }
 
 		const accessToken = this.jwt.sign(data, {
 			expiresIn: '1h'
